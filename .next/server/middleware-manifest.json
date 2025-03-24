@@ -1,0 +1,27 @@
+{
+  "version": 3,
+  "middleware": {},
+  "functions": {
+    "/api/timer": {
+      "files": [
+        "server/edge-runtime-webpack.js",
+        "server/pages/api/timer.js"
+      ],
+      "name": "pages/api/timer",
+      "page": "/api/timer",
+      "matchers": [
+        {
+          "regexp": "^/api/timer$",
+          "originalSource": "/api/timer"
+        }
+      ],
+      "wasm": [],
+      "assets": [],
+      "env": {
+        "__NEXT_BUILD_ID": "development",
+        "NEXT_SERVER_ACTIONS_ENCRYPTION_KEY": "cL+dgIBhIPKTN4IqmFor/vKu83gqyeUQN16suMYfA1E="
+      }
+    }
+  },
+  "sortedMiddleware": []
+}
