@@ -38,7 +38,7 @@ if (
 export const fetchTimerData = async () => {
   try {
     // await fetch(`${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/api/timer`);
-    await fetch("https://9bets.in/api/timer");
+    await fetch(`${NEXT_PUBLIC_SITE_URL}/api/timer`);
   } catch (error) {
     console.error("Failed to fetch timer data:", error);
   }
