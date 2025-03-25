@@ -9,7 +9,7 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "./../utils/firebase";
 import { useRouter } from "next/navigation";
 import { signOut } from "firebase/auth";
-import BottomMenu from "../components/UI/BottomMenu.";
+import BottomMenu from "../components/UI/BottomMenu";
 import MobileNavbar from "../components/UI/MobileNavbar";
 import Cards from "../components/UI/Cards";
 import Footer from "../components/UI/Footer";
