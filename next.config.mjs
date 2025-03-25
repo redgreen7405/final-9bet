@@ -24,10 +24,9 @@ if (
 }
 
 const fetchTimerData = async () => {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
   try {
-    await fetch(`${siteUrl}/api/timer`);
-    console.log("✅ Timer data fetched from", siteUrl);
+    await fetch(`${NEXT_PUBLIC_SITE_URL}/api/timer`);
+    console.log("✅ Timer data fetched from", `${NEXT_PUBLIC_SITE_URL}`);
   } catch (error) {
     console.error("❌ Failed to fetch timer data:", error);
   }
