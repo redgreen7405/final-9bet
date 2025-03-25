@@ -68,7 +68,7 @@ const HomePage = () => {
   const router = useRouter();
 
   useEffect(() => {
-    fetch(`${procee.env.NEXT_PUBLIC_SITE_URL}/api/timer`);
+    fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/timer`);
   }, []);
   useEffect(() => {
     // Client-side only code
