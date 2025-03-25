@@ -7,6 +7,8 @@ import {
   sizeOptions,
 } from "../../constants/timerConfig";
 import { useEffect, useState } from "react";
+import { collection, query, where, getDocs } from "firebase/firestore";
+import { firestore } from "../../utils/firebase";
 
 // Utility function to format time display
 const formatTime = (seconds) => {
@@ -28,6 +30,11 @@ export const RoomCard = ({
   const [timeLeft, setTimeLeft] = useState();
   const [currentPeriod, setCurrentPeriod] = useState("");
   const [error, setError] = useState(false);
+  const [bidStats, setBidStats] = useState({
+    totalBids: 0,
+    totalAmount: 0,
+  });
+  const [statsLoading, setStatsLoading] = useState(false);
 
   const fetchTimers = async () => {
     try {
@@ -48,6 +55,33 @@ export const RoomCard = ({
     }
   };
 
+  const fetchBidStats = async (period) => {
+    if (!period) return;
+
+    setStatsLoading(true);
+    try {
+      const bidsRef = collection(firestore, "bids");
+      const q = query(bidsRef, where("slotId", "==", period));
+      const querySnapshot = await getDocs(q);
+
+      let totalAmount = 0;
+
+      querySnapshot.docs.forEach((doc) => {
+        const bid = doc.data();
+        totalAmount += bid.totalBetAmount || 0;
+      });
+
+      setBidStats({
+        totalBids: querySnapshot.size,
+        totalAmount: totalAmount,
+      });
+    } catch (error) {
+      console.error("Error fetching bid stats:", error);
+    } finally {
+      setStatsLoading(false);
+    }
+  };
+
   useEffect(() => {
     let mounted = true;
 
@@ -65,6 +99,27 @@ export const RoomCard = ({
       clearInterval(refreshInterval);
     };
   }, [roomNumber]); // Add roomNumber as dependency
+
+  useEffect(() => {
+    let interval;
+
+    if (currentPeriod) {
+      // Fetch immediately when period changes
+      fetchBidStats(currentPeriod);
+
+      // Then set up interval to fetch every 5 seconds
+      interval = setInterval(() => {
+        fetchBidStats(currentPeriod);
+      }, 5000);
+    }
+
+    // Cleanup interval when component unmounts or period changes
+    return () => {
+      if (interval) {
+        clearInterval(interval);
+      }
+    };
+  }, [currentPeriod]);
 
   return (
     <div className="bg-white rounded-xl shadow-md p-6 space-y-4">
@@ -91,6 +146,29 @@ export const RoomCard = ({
         </h3>
       </div>
 
+      <div className="grid grid-cols-2 gap-4 p-4 bg-gray-50 rounded-lg">
+        <div className="text-center">
+          <div className="text-sm text-gray-500">Total Bids</div>
+          <div className="text-lg font-bold text-gray-900">
+            {statsLoading ? (
+              <div className="animate-pulse h-6 w-16 bg-gray-200 rounded mx-auto"></div>
+            ) : (
+              bidStats.totalBids
+            )}
+          </div>
+        </div>
+        <div className="text-center">
+          <div className="text-sm text-gray-500">Total Amount</div>
+          <div className="text-lg font-bold text-gray-900">
+            {statsLoading ? (
+              <div className="animate-pulse h-6 w-20 bg-gray-200 rounded mx-auto"></div>
+            ) : (
+              `₹${bidStats.totalAmount}`
+            )}
+          </div>
+        </div>
+      </div>
+
       <div className="grid grid-cols-1 gap-4">
         {[
           { label: "Color", key: "color", options: colorOptions },
@@ -101,7 +179,6 @@ export const RoomCard = ({
             <DropdownMenu
               value={selectedValues[key] || ""}
               onChange={(value) => {
-                console.log(value, key);
                 if (key == "color") {
                   onValueChange("number", "");
                   onValueChange("size", "");
