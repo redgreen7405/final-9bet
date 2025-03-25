@@ -14,6 +14,9 @@ import MobileNavbar from "../components/UI/MobileNavbar";
 import Cards from "../components/UI/Cards";
 import Footer from "../components/UI/Footer";
 import { Toaster } from "react-hot-toast";
+import dotenv from 'dotenv';
+
+dotenv.config()
 
 const cardData = [
   {
@@ -68,7 +71,7 @@ const HomePage = () => {
   const router = useRouter();
 
   useEffect(() => {
-    fetch("http://localhost:3000/api/timer");
+    fetch(`${procee.env.NEXT_PUBLIC_SITE_URL}/api/timer`);
   }, []);
   useEffect(() => {
     // Client-side only code
