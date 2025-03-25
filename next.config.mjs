@@ -7,42 +7,41 @@ const nextConfig = {
 
 export default nextConfig;
 
-// Initialize cron job only once at server startup
-// This will only run in development or on the server, not during build
+// Helper to safely run server-side tasks only
+const isServer = typeof window === "undefined";
+
+// Initialize cron job only on the server and not during build
 if (
-  process.env.NODE_ENV !== "production" ||
-  process.env.NEXT_PHASE === "phase-production-server"
+  isServer &&
+  (process.env.NODE_ENV !== "production" ||
+    process.env.NEXT_PHASE === "phase-production-server")
 ) {
-  // import("./lib/cronScheduler.js")
-  //   .then(({ setupCronJob }) => {
-  //     setTimeout(() => {
-  //       setupCronJob();
-  //     }, 5000);
-  //     fetchTimerData();
-  //     console.log("Cron job initialized at server startup");
-  //   })
-  //   .catch((error) => {
-  //     console.error("Failed to initialize cron job:", error);
-  //   });
-  import("./lib/localSchduler.js")
+  import("./lib/localScheduler.js")
     .then(({ setupLocalScheduler }) => {
-      setupLocalScheduler();
-      console.log("Cron job initialized at server startup");
+      setTimeout(() => {
+        setupLocalScheduler();
+        console.log("✅ Cron job initialized at server startup");
+      }, 5000);
+      fetchTimerData();
     })
     .catch((error) => {
-      console.error("Failed to initialize cron job:", error);
+      console.error("❌ Failed to initialize cron job:", error);
     });
 }
 
-// Example function to fetch from the `/api/timer` route
-export const fetchTimerData = async () => {
+// Example function to fetch timer data from API route
+const fetchTimerData = async () => {
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
   try {
-    // await fetch(`${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/api/timer`);
-    await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/timer`);
+    await fetch(`${siteUrl}/api/timer`);
+    console.log("✅ Timer data fetched from", siteUrl);
   } catch (error) {
-    console.error("Failed to fetch timer data:", error);
+    console.error("❌ Failed to fetch timer data:", error);
   }
 };
 
-// Call the function at runtime initialization
-fetchTimerData();
+if (isServer) {
+  fetchTimerData();
+}
+
+console.log("process.env.NEXT_PUBLIC_SITE_URL:", process.env.NEXT_PUBLIC_SITE_URL);

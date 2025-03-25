@@ -14,9 +14,6 @@ import MobileNavbar from "../components/UI/MobileNavbar";
 import Cards from "../components/UI/Cards";
 import Footer from "../components/UI/Footer";
 import { Toaster } from "react-hot-toast";
-import dotenv from 'dotenv';
-
-dotenv.config()
 
 const cardData = [
   {
