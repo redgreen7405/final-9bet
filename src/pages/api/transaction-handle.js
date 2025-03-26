@@ -8,7 +8,7 @@ import {
 } from "firebase/firestore";
 import { database, firestore } from "../../utils/firebase"; // Adjust path as per your project structure
 import { ref, push, set, serverTimestamp, query } from "firebase/database";
-
+export const runtime = "edge";
 // Reusable API function to handle transactions
 export const handleTransactionRequest = async (
   userId,

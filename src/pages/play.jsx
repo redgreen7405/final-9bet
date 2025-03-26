@@ -25,7 +25,6 @@ const Play = () => {
 
   const [isLoading, setIsLoading] = useState(true);
   const [showOverlay, setShowOverlay] = useState(false);
-  const [isOpen, setIsOpen] = useState(false);
   const [color, setColor] = useState("green");
   const [selected, setSelected] = useState();
   const [bidAmount, setBidAmount] = useState();
@@ -108,9 +107,11 @@ const Play = () => {
         <div className="game-container">
           <Game
             showOverlay={showOverlay}
-            setIsOpen={setIsOpen}
-            setColor={setColor}
             timeLeft={timeLeft}
+            selected={selected}
+            setMoney={setMoney}
+            setBidAmount={setBidAmount}
+            newPeriod={newPeriod}
             setSelected={setSelected}
           />
         </div>
@@ -125,16 +126,6 @@ const Play = () => {
       <div className="block md:hidden fixed bottom-0 w-full z-20">
         <BottomMenu />
       </div>
-      <Drawer
-        isOpen={isOpen}
-        onClose={() => setIsOpen(false)}
-        color={color}
-        totalAmount={1.0}
-        selected={selected}
-        setMoney={setMoney}
-        setBidAmount={setBidAmount}
-        newPeriod={newPeriod}
-      />
     </>
   );
 };

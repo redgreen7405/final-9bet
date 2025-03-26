@@ -225,7 +225,6 @@ const Drawer = ({
       id="drawer-overlay"
       className={`fixed inset-0 z-50 flex justify-center items-end bg-black/50 
         ${isOpen ? "visible" : "invisible"}`}
-      onClick={(e) => e.target.id === "drawer-overlay" && handleClose()}
     >
       <div
         className={`absolute bottom-0 w-full max-w-md rounded-t-3xl bg-${
@@ -339,7 +338,7 @@ const Drawer = ({
                 active:scale-95 transition-all tracking-wider"
               onClick={handleClose}
             >
-              Cancele
+              Cancel
             </button>
             <button
               className={`py-3 rounded-lg transition-all duration-300 tracking-wider font-semibold

@@ -19,6 +19,7 @@ import {
   doc,
 } from "firebase/firestore";
 
+export const runtime = "edge";
 // Fetch all transactions from Firebase
 export const getTransactions = async () => {
   const transactionsRef = ref(database, "transactions");

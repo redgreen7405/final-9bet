@@ -2,9 +2,20 @@ import React, { useState } from "react";
 import Image from "next/image";
 import balls from "../../assets";
 import { useEffect } from "react";
+import Drawer from "./Drawer";
 
-const Game = ({ showOverlay, setIsOpen, setColor, timeLeft, setSelected }) => {
+const Game = ({
+  showOverlay,
+  timeLeft,
+  selected,
+  setMoney,
+  setBidAmount,
+  newPeriod,
+  setSelected,
+}) => {
   const [images] = useState(balls);
+  const [isOpen, setIsOpen] = useState(false);
+  const [color, setColor] = useState("green");
 
   const handlePlayButton = (e) => {
     const buttonId = e.target.id;
@@ -157,6 +168,17 @@ const Game = ({ showOverlay, setIsOpen, setColor, timeLeft, setSelected }) => {
           </button>
         </div>
       </div>
+
+      <Drawer
+        isOpen={isOpen}
+        onClose={() => setIsOpen(false)}
+        color={color}
+        totalAmount={1.0}
+        selected={selected}
+        setMoney={setMoney}
+        setBidAmount={setBidAmount}
+        newPeriod={newPeriod}
+      />
     </div>
   );
 };

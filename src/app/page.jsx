@@ -68,7 +68,7 @@ const HomePage = () => {
   const router = useRouter();
 
   useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/timer`);
+    fetch("https://9bets.in/api/timer");
   }, []);
   useEffect(() => {
     // Client-side only code

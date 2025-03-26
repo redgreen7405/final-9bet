@@ -1,6 +1,6 @@
 // /src/pages/api/winner.js
 import { handleWinRequest } from "./winner-logic";
-
+export const runtime = "edge";
 export default async function handler(req, res) {
   try {
     const { period } = req.query;
