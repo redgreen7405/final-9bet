@@ -12,7 +12,7 @@ import {
   writeBatch,
   addDoc,
 } from "firebase/firestore";
-
+export const runtime = "edge";
 // Function to calculate winners and distribute rewards based on smallest bet amount
 export const handleWinRequest = async (slotId) => {
   try {
