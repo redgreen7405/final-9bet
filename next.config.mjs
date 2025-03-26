@@ -10,7 +10,7 @@ if (
   (process.env.NODE_ENV !== "production" ||
     process.env.NEXT_PHASE === "phase-production-server")
 ) {
-  import("./lib/localScheduler.js")
+  import("./src/lib/localSchduler.js")
     .then(({ setupLocalScheduler }) => {
       setTimeout(() => {
         setupLocalScheduler();
@@ -25,11 +25,14 @@ if (
 
 const fetchTimerData = async () => {
   try {
-    await fetch(`${NEXT_PUBLIC_SITE_URL}/api/timer`);
-    console.log("✅ Timer data fetched from", `${NEXT_PUBLIC_SITE_URL}`);
+    await fetch(`https://9bets.in/api/timer`);
+    console.log("✅ Timer data fetched from", `https://9bets.in`);
   } catch (error) {
     console.error("❌ Failed to fetch timer data:", error);
   }
 };
 
-console.log("process.env.NEXT_PUBLIC_SITE_URL:", process.env.NEXT_PUBLIC_SITE_URL);
+console.log(
+  "process.env.NEXT_PUBLIC_SITE_URL:",
+  process.env.NEXT_PUBLIC_SITE_URL
+);

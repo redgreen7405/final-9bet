@@ -60,6 +60,7 @@ export default function Dashboard() {
   const [filter, setFilter] = useState(FILTER_OPTIONS[0]);
   const [referralUrl, setReferralUrl] = useState("");
   const [balance, setBalance] = useState();
+  const [withdrawalMethod, setWithdrawalMethod] = useState("mobile"); // 'mobile' or 'bank'
 
   // Fetch payments and set referral URL
   useEffect(() => {
@@ -188,27 +189,30 @@ export default function Dashboard() {
       toast.error("Minimum withdrawal amount is Rs. 100");
       return;
     }
-    const numRegex = /^\d{10}$/;
-    if (!numRegex.test(number)) {
-      toast.error("Mobile number must be 10 digits");
-      return;
-    }
-    if (type === "deposit" && transactionData.upiId.length !== 12) {
-      toast.error("UPI ID must be 12 characters long ");
-      return;
-    }
+    if (withdrawalMethod === "mobile") {
+      const numRegex = /^\d{10}$/;
+      if (!numRegex.test(number)) {
+        toast.error("Mobile number must be 10 digits");
+        return;
+      }
+    } else {
+      if (type === "deposit" && transactionData.upiId.length !== 12) {
+        toast.error("UPI ID must be 12 characters long ");
+        return;
+      }
 
-    const ifscRegex = /^[A-Za-z]{4}[0-9]{7}$/;
-    if (type === "withdrawal" && !ifscRegex.test(transactionData.ifsc)) {
-      toast.error(
-        "IFSC code must be 11 characters long and contain only letters and numbers"
-      );
-      return;
-    }
-    const bankRegex = /^\d{12}$/;
-    if (type === "withdrawal" && !bankRegex.test(transactionData.bankNo)) {
-      toast.error("Bank account number must be 12 digits");
-      return;
+      const ifscRegex = /^[A-Za-z]{4}[0-9]{7}$/;
+      if (type === "withdrawal" && !ifscRegex.test(transactionData.ifsc)) {
+        toast.error(
+          "IFSC code must be 11 characters long and contain only letters and numbers"
+        );
+        return;
+      }
+      const bankRegex = /^\d{12}$/;
+      if (type === "withdrawal" && !bankRegex.test(transactionData.bankNo)) {
+        toast.error("Bank account number must be 12 digits");
+        return;
+      }
     }
     try {
       setLoading(true);
@@ -431,7 +435,10 @@ export default function Dashboard() {
                   handleTransaction(
                     "withdrawal",
                     withdrawAmount,
-                    transactionData.withdrawNumbers
+                    withdrawalMethod === "mobile"
+                      ? transactionData.withdrawNumbers
+                      : transactionData.bankNo,
+                    withdrawalMethod
                   );
                 }}
                 className="p-6 space-y-4"
@@ -454,58 +461,115 @@ export default function Dashboard() {
                   </div>
                 </div>
 
+                {/* Payment Method Selection */}
                 <div className="space-y-2">
                   <label className="text-sm font-medium text-gray-700">
-                    Mobile Number
+                    Withdrawal Method
                   </label>
-                  <input
-                    type="number"
-                    placeholder="Enter payment processing number"
-                    value={transactionData.withdrawNumbers}
-                    onChange={(e) =>
-                      setTransactionData({
-                        ...transactionData,
-                        withdrawNumbers: e.target.value,
-                      })
-                    }
-                    className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-transparent"
-                  />
+                  <div className="grid grid-cols-2 gap-3">
+                    <button
+                      type="button"
+                      onClick={() => setWithdrawalMethod("mobile")}
+                      className={`py-3 px-4 rounded-xl border ${
+                        withdrawalMethod === "mobile"
+                          ? "bg-red-100 border-red-500 text-red-700"
+                          : "bg-white border-gray-200 text-gray-700"
+                      } font-medium flex items-center justify-center`}
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-5 w-5 mr-2"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                      >
+                        <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
+                      </svg>
+                      Mobile Payment
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setWithdrawalMethod("bank")}
+                      className={`py-3 px-4 rounded-xl border ${
+                        withdrawalMethod === "bank"
+                          ? "bg-red-100 border-red-500 text-red-700"
+                          : "bg-white border-gray-200 text-gray-700"
+                      } font-medium flex items-center justify-center`}
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-5 w-5 mr-2"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                      >
+                        <path d="M4 4a2 2 0 00-2 2v1h16V6a2 2 0 00-2-2H4z" />
+                        <path
+                          fillRule="evenodd"
+                          d="M18 9H2v5a2 2 0 002 2h12a2 2 0 002-2V9zM4 13a1 1 0 011-1h1a1 1 0 110 2H5a1 1 0 01-1-1zm5-1a1 1 0 100 2h1a1 1 0 100-2H9z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                      Bank Transfer
+                    </button>
+                  </div>
                 </div>
 
-                <div className="space-y-2">
-                  <label className="text-sm font-medium text-gray-700">
-                    IFSC Code
-                  </label>
-                  <input
-                    placeholder="Enter your IFSC Code"
-                    value={transactionData.ifsc}
-                    onChange={(e) =>
-                      setTransactionData({
-                        ...transactionData,
-                        ifsc: e.target.value.toUpperCase(),
-                      })
-                    }
-                    className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-transparent"
-                  />
-                </div>
+                {/* Conditional Fields Based on Method */}
+                {withdrawalMethod === "mobile" ? (
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-gray-700">
+                      Mobile Number
+                    </label>
+                    <input
+                      type="number"
+                      placeholder="Enter payment processing number"
+                      value={transactionData.withdrawNumbers}
+                      onChange={(e) =>
+                        setTransactionData({
+                          ...transactionData,
+                          withdrawNumbers: e.target.value,
+                        })
+                      }
+                      className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                    />
+                  </div>
+                ) : (
+                  <>
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium text-gray-700">
+                        IFSC Code
+                      </label>
+                      <input
+                        placeholder="Enter your IFSC Code"
+                        value={transactionData.ifsc}
+                        onChange={(e) =>
+                          setTransactionData({
+                            ...transactionData,
+                            ifsc: e.target.value.toUpperCase(),
+                          })
+                        }
+                        className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                      />
+                    </div>
 
-                <div className="space-y-2">
-                  <label className="text-sm font-medium text-gray-700">
-                    Bank Account Number
-                  </label>
-                  <input
-                    type="number"
-                    placeholder="Enter your Bank Account Number"
-                    value={transactionData.bankNo}
-                    onChange={(e) =>
-                      setTransactionData({
-                        ...transactionData,
-                        bankNo: e.target.value,
-                      })
-                    }
-                    className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-transparent"
-                  />
-                </div>
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium text-gray-700">
+                        Bank Account Number
+                      </label>
+                      <input
+                        type="number"
+                        placeholder="Enter your Bank Account Number"
+                        value={transactionData.bankNo}
+                        onChange={(e) =>
+                          setTransactionData({
+                            ...transactionData,
+                            bankNo: e.target.value,
+                          })
+                        }
+                        className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                      />
+                    </div>
+                  </>
+                )}
 
                 <button
                   type="submit"
