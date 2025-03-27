@@ -12,10 +12,58 @@ import {
   writeBatch,
   addDoc,
 } from "firebase/firestore";
+
+// Add the timer configuration at the top of the file
+const timers = [
+  { label: "1min", duration: 60 },
+  { label: "3min", duration: 180 },
+  { label: "5min", duration: 300 },
+  { label: "10min", duration: 600 },
+];
+
+// Start time for the application
+let universalStartTime = new Date();
+
+// Track which periods have already been processed to avoid duplicate calls
+const processedPeriods = new Set();
+
+// Helper to calculate remaining time for a timer based on the universal start time
+const getRemainingTime = (index) => {
+  const now = Date.now();
+  const elapsed = Math.floor((now - universalStartTime) / 1000); // Elapsed seconds
+  const remaining = timers[index].duration - (elapsed % timers[index].duration); // Loop logic
+  return remaining > 0 ? remaining : 0;
+};
+
+// Get the current period number for a specific timer
+const getCurrentPeriodNumber = (index) => {
+  const now = Date.now();
+  const elapsed = Math.floor((now - universalStartTime) / 1000); // Elapsed seconds
+  return `${timers[index].label.replace("min", "M")}${
+    new Date().toISOString().slice(0, 4) +
+    (new Date().getMonth() + 1).toString().padStart(2, "0") +
+    new Date().getDate().toString().padStart(2, "0")
+  }${Math.floor(elapsed / timers[index].duration) + 1}`; // Period number
+};
+
+// Function to get all current periods
+export const getCurrentPeriods = () => {
+  return timers.map((_, index) => getCurrentPeriodNumber(index));
+};
+
+// Function to get remaining times for all timers
+export const getRemainingTimes = () => {
+  return timers.map((_, index) => getRemainingTime(index));
+};
+
 export const runtime = "edge";
 // Function to calculate winners and distribute rewards based on smallest bet amount
-export const handleWinRequest = async (slotId) => {
+export const handleWinRequest = async (timerIndex = 0) => {
   try {
+    // If slotId is not provided, calculate it based on timerIndex
+
+    let slotId = getCurrentPeriodNumber(timerIndex);
+
     const bidsRef = collection(firestore, "bids");
     const bidsSnapshot = await getDocs(
       query(bidsRef, where("slotId", "==", slotId))

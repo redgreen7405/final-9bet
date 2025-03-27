@@ -223,8 +223,9 @@ const Drawer = ({
   return (
     <div
       id="drawer-overlay"
-      className={`fixed inset-0 z-50 flex justify-center items-end bg-black/50 
+      className={`fixed inset-0 z-50 flex justify-center items-end bg-black/50
         ${isOpen ? "visible" : "invisible"}`}
+      style={{ margin: 0 }}
     >
       <div
         className={`absolute bottom-0 w-full max-w-md rounded-t-3xl bg-${

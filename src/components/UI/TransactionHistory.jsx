@@ -18,6 +18,9 @@ const TransactionHistory = () => {
   const [isTypeFilterOpen, setIsTypeFilterOpen] = useState(false);
   const [isDateFilterOpen, setIsDateFilterOpen] = useState(false);
 
+  // Update the type options to match your transaction types exactly
+  const transactionTypes = ["All", "Deposit", "Withdrawal"]; // Capitalize to match your data
+
   // Fetch transactions
   const fetchTransactions = async () => {
     setLoading(true);
@@ -54,6 +57,7 @@ const TransactionHistory = () => {
         });
 
         setTransactions(transactionsList);
+        console.log("trans", transactionsList);
       } else {
         throw new Error("User not found.");
       }
@@ -75,7 +79,8 @@ const TransactionHistory = () => {
     return transactions
       .filter(
         (transaction) =>
-          (typeFilter === "All" || transaction.type === typeFilter) &&
+          (typeFilter === "All" ||
+            transaction.type.toLowerCase() === typeFilter.toLowerCase()) &&
           (searchTerm === "" ||
             transaction.type.toLowerCase().includes(searchTerm.toLowerCase()) ||
             transaction.formattedAmount
@@ -128,14 +133,14 @@ const TransactionHistory = () => {
           </button>
           {isTypeFilterOpen && (
             <div className="absolute z-10 mt-2 w-48 bg-white border border-gray-100 rounded-lg shadow-lg">
-              {["All", "Deposit", "Withdrawal"].map((type) => (
+              {transactionTypes.map((type) => (
                 <div
                   key={type}
                   onClick={() => {
                     setTypeFilter(type);
                     setIsTypeFilterOpen(false);
                   }}
-                  className="px-4 py-2 hover:bg-gray-50 cursor-pointer"
+                  className="px-4 py-2 hover:bg-gray-50 cursor-pointer capitalize"
                 >
                   {type}
                 </div>
@@ -186,13 +191,21 @@ const TransactionHistory = () => {
             <div
               key={transaction.id}
               className={`flex flex-col md:flex-row justify-between p-3 rounded-lg transition-all duration-300 ${
-                transaction.type === "Deposit"
-                  ? "bg-green-100 hover:bg-green-200"
-                  : "bg-red-100 hover:bg-red-200"
+                transaction.type.toLowerCase() === "deposit"
+                  ? "bg-green-50 hover:bg-green-100"
+                  : "bg-red-50 hover:bg-red-100"
               }`}
             >
               <div className="flex flex-col">
-                <p className="font-medium text-gray-800">{transaction.type}</p>
+                <p
+                  className={`font-medium ${
+                    transaction.type.toLowerCase() === "deposit"
+                      ? "text-green-600"
+                      : "text-red-600"
+                  }`}
+                >
+                  {transaction.type}
+                </p>
                 <p className="text-sm text-gray-600">
                   {new Date(transaction.timestamp).toLocaleString("en-IN", {
                     weekday: "short",
@@ -206,11 +219,12 @@ const TransactionHistory = () => {
               </div>
               <span
                 className={`font-bold self-end ${
-                  transaction.type === "Deposit"
-                    ? "text-green-700"
-                    : "text-red-700"
+                  transaction.type.toLowerCase() === "deposit"
+                    ? "text-green-600"
+                    : "text-red-600"
                 }`}
               >
+                {transaction.type.toLowerCase() === "deposit" ? "+" : "-"}
                 {transaction.formattedAmount}
               </span>
             </div>

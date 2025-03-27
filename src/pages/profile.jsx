@@ -10,7 +10,7 @@ import "../app/globals.css";
 import Wallet from "../components/UI/Wallet";
 import UserProfileInfo from "../components/UI/UserProfileInfo";
 import TransactionHistory from "../components/UI/TransactionHistory";
-import Loader from "../components/UI/Loader"
+import Loader from "../components/UI/Loader";
 
 const Profile = () => {
   const [money, setMoney] = useState();

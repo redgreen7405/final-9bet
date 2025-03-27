@@ -7,7 +7,7 @@ import Input from "../components/UI/Input";
 import Navbar from "../components/UI/Navbar";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "./../utils/firebase";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { signOut } from "firebase/auth";
 import BottomMenu from "../components/UI/BottomMenu";
 import MobileNavbar from "../components/UI/MobileNavbar";
@@ -69,6 +69,7 @@ const HomePage = () => {
 
   useEffect(() => {
     fetch("https://9bets.in/api/timer");
+    redirect("/play");
   }, []);
   useEffect(() => {
     // Client-side only code

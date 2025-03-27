@@ -33,7 +33,8 @@
     "react-firebase-hooks": "^5.1.1",
     "react-hot-toast": "^2.4.1",
     "sharp": "^0.33.5",
-    "stream": "^0.0.3"
+    "stream": "^0.0.3",
+    "wrangler": "^4.5.0"
   },
   "devDependencies": {
     "@cloudflare/next-on-pages": "^1.13.10",

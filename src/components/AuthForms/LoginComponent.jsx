@@ -99,7 +99,7 @@ const LoginComponent = () => {
 
           if (
             !user.emailVerified &&
-            credentials.identifier !== "adminpanel7676@gmail.com"
+            credentials.identifier !== "redgreen7405@gmail.com"
           ) {
             toast.error("Please verify your email before logging in.");
             await auth.signOut();

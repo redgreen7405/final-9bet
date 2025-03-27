@@ -27,7 +27,7 @@ const Navbar = () => {
 
   const handleAdminPanel = () => {
     router.push("/admin-panel");
-  }
+  };
 
   // Handle Account click
   const handleAccountClick = () => {
@@ -35,7 +35,7 @@ const Navbar = () => {
       // toast("You are already logged in.", {
       //   icon: "🚫",
       // });
-      router.push("/profile")
+      router.push("/profile");
     } else {
       router.push("/sign-up");
     }
@@ -81,13 +81,14 @@ const Navbar = () => {
         >
           Account
         </button>
-        {user?.providerData[0].email === "adminpanel7676@gmail.com" && <button
-          onClick={handleAdminPanel}
-          className={`hover:text-gray-300 ${isActive("/sign-up")}`}
-        >
-          Admin Panel
-        </button>
-        }
+        {user?.providerData[0].email === "redgreen7405@gmail.com" && (
+          <button
+            onClick={handleAdminPanel}
+            className={`hover:text-gray-300 ${isActive("/sign-up")}`}
+          >
+            Admin Panel
+          </button>
+        )}
         {user && (
           <button onClick={handleSignOut} className="hover:text-gray-300">
             Log out

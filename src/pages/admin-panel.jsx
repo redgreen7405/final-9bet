@@ -13,13 +13,17 @@ import Footer from "../components/UI/Footer";
 import "../app/globals.css";
 import Loader from "../components/UI/Loader";
 import RequestHistoryTable from "./request-table";
-import { addDoc, collection } from "firebase/firestore";
+import { addDoc, collection, getDocs } from "firebase/firestore";
 import { serverTimestamp } from "firebase/database";
 
 export const AdminPanel = () => {
   const [user] = useAuthState(auth);
   const [selections, setSelections] = useState({});
   const [loading, setLoading] = useState(false);
+  const [registeredUsers, setRegisteredUsers] = useState({
+    count: 0,
+    loading: true,
+  });
 
   const rooms = [
     { id: 0, duration: TIMER_DURATIONS.ONE_MIN },
@@ -27,6 +31,32 @@ export const AdminPanel = () => {
     { id: 2, duration: TIMER_DURATIONS.FIVE_MIN },
     { id: 3, duration: TIMER_DURATIONS.TEN_MIN },
   ];
+
+  // Fetch the total number of registered users
+  const fetchRegisteredUsers = async () => {
+    try {
+      const usersRef = collection(firestore, "users");
+      const usersSnapshot = await getDocs(usersRef);
+
+      setRegisteredUsers({
+        count: usersSnapshot.size,
+        loading: false,
+      });
+    } catch (error) {
+      console.error("Error fetching registered users:", error);
+      setRegisteredUsers({
+        count: 0,
+        loading: false,
+      });
+    }
+  };
+
+  // Fetch registered users when component mounts
+  useEffect(() => {
+    if (user?.providerData[0].email === "redgreen7405@gmail.com") {
+      fetchRegisteredUsers();
+    }
+  }, [user]);
 
   const handleValueChange = (roomId, type, value) => {
     setSelections((prev) => ({
@@ -95,9 +125,39 @@ export const AdminPanel = () => {
 
       <main className="px-4 py-8 mb-12 lg:mb-0">
         <div className="mx-auto">
-          <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2 lg:mb-8 mt-5">
-            Admin Dashboard
-          </h1>
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
+            <h1 className="text-2xl md:text-3xl font-bold text-gray-900">
+              Admin Dashboard
+            </h1>
+            <div className="mt-3 md:mt-0 p-3 bg-white rounded-lg shadow-sm">
+              <span className="font-medium text-gray-700">
+                Total Registered Users:{" "}
+              </span>
+              {registeredUsers.loading ? (
+                <span className="inline-block w-12 h-5 bg-gray-200 rounded animate-pulse"></span>
+              ) : (
+                <span className="font-bold text-blue-600">
+                  {registeredUsers.count}
+                </span>
+              )}
+            </div>
+          </div>
+
+          {/* Dashboard Stats Overview */}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+            <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100">
+              <div className="text-sm text-gray-500">Total Users</div>
+              <div className="text-2xl font-bold text-blue-600">
+                {registeredUsers.loading ? (
+                  <div className="animate-pulse h-8 w-20 bg-gray-200 rounded"></div>
+                ) : (
+                  registeredUsers.count
+                )}
+              </div>
+            </div>
+            {/* You can add more summary stats here in the future */}
+          </div>
+
           <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {rooms.map(({ id, duration }) => (
               <RoomCard

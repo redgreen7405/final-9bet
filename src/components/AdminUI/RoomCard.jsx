@@ -33,6 +33,16 @@ export const RoomCard = ({
   const [bidStats, setBidStats] = useState({
     totalBids: 0,
     totalAmount: 0,
+    colorBids: {
+      red: 0,
+      green: 0,
+      violet: 0,
+    },
+    colorAmounts: {
+      red: 0,
+      green: 0,
+      violet: 0,
+    },
   });
   const [statsLoading, setStatsLoading] = useState(false);
 
@@ -65,15 +75,40 @@ export const RoomCard = ({
       const querySnapshot = await getDocs(q);
 
       let totalAmount = 0;
+      const colorBids = {
+        red: 0,
+        green: 0,
+        violet: 0,
+      };
+      const colorAmounts = {
+        red: 0,
+        green: 0,
+        violet: 0,
+      };
 
       querySnapshot.docs.forEach((doc) => {
         const bid = doc.data();
         totalAmount += bid.totalBetAmount || 0;
+
+        // Track bids by color
+        if (
+          bid.betType === "color" ||
+          bid.betValue === "red" ||
+          bid.betValue === "green" ||
+          bid.betValue === "violet"
+        ) {
+          const color = bid.betValue;
+          colorBids[color] = (colorBids[color] || 0) + 1;
+          colorAmounts[color] =
+            (colorAmounts[color] || 0) + (bid.totalBetAmount || 0);
+        }
       });
 
       setBidStats({
         totalBids: querySnapshot.size,
         totalAmount: totalAmount,
+        colorBids,
+        colorAmounts,
       });
     } catch (error) {
       console.error("Error fetching bid stats:", error);
@@ -121,6 +156,23 @@ export const RoomCard = ({
     };
   }, [currentPeriod]);
 
+  // Helper to render a color stat item
+  const ColorStatItem = ({ color, count, amount }) => (
+    <div className="flex flex-col items-center">
+      <div
+        className={`w-3 h-3 rounded-full mb-1 ${
+          color === "red"
+            ? "bg-red-500"
+            : color === "green"
+            ? "bg-green-500"
+            : "bg-purple-500"
+        }`}
+      />
+      <span className="text-xs font-medium">{count}</span>
+      <span className="text-xs text-gray-500">₹{amount}</span>
+    </div>
+  );
+
   return (
     <div className="bg-white rounded-xl shadow-md p-6 space-y-4">
       <div className="flex justify-between items-center">
@@ -167,6 +219,38 @@ export const RoomCard = ({
             )}
           </div>
         </div>
+      </div>
+
+      {/* Color-specific bid stats */}
+      <div className="p-4 bg-gray-50 rounded-lg">
+        <div className="text-sm text-gray-500 mb-3 text-center">
+          Bids by Color
+        </div>
+        {statsLoading ? (
+          <div className="flex justify-around space-x-2">
+            <div className="animate-pulse h-12 w-12 bg-gray-200 rounded"></div>
+            <div className="animate-pulse h-12 w-12 bg-gray-200 rounded"></div>
+            <div className="animate-pulse h-12 w-12 bg-gray-200 rounded"></div>
+          </div>
+        ) : (
+          <div className="flex justify-around">
+            <ColorStatItem
+              color="red"
+              // count={bidStats.colorBids.red}
+              amount={bidStats.colorAmounts.red}
+            />
+            <ColorStatItem
+              color="green"
+              // count={bidStats.colorBids.green}
+              amount={bidStats.colorAmounts.green}
+            />
+            <ColorStatItem
+              color="violet"
+              // count={bidStats.colorBids.violet}
+              amount={bidStats.colorAmounts.violet}
+            />
+          </div>
+        )}
       </div>
 
       <div className="grid grid-cols-1 gap-4">

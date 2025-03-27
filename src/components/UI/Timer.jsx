@@ -119,85 +119,69 @@ const Timer = ({
       text: "Select small: if the result shows 0,1,2,3,4 you will get (98 * 2) 196",
     },
   ];
-  // Fetch the current timers from the backend
+  // Fetch the current timers from the backend - improved version
   const fetchTimers = async () => {
     try {
       const res = await fetch("/api/timer");
+
+      if (!res.ok) {
+        throw new Error(`API returned status: ${res.status}`);
+      }
+
       const data = await res.json();
+
+      if (!data || !data.timers || !Array.isArray(data.timers)) {
+        console.error("Invalid data format received:", data);
+        return;
+      }
+
+      // Update timer data
       setTimeLeft(data.timers.map((timer) => timer.remaining));
-      setNewPeriod(data.timers.map((timer, index) => timer.period));
-      console.log("new periods", newPeriod);
+
+      // Update period information
+      setNewPeriod(data.timers.map((timer) => timer.period));
+
+      // Process timer logic
+      data.timers.forEach((timer, index) => {
+        const remaining = timer.remaining;
+
+        if (index === activeButton) {
+          // Handle winner API call at 5 seconds
+          // if (remaining === 5) {
+          //   callWinnerAPI(timer.period);
+          // }
+
+          // Handle bid result check at 2 seconds
+          if (remaining === 2) {
+            console.log("Checking bid result at 2 seconds remaining");
+            checkBidResult();
+          }
+
+          // Handle last 10 seconds state
+          if (remaining < 11 && remaining >= 1) {
+            onLastTenSeconds(true);
+          } else if (remaining < 1) {
+            onLastTenSeconds(false);
+          }
+        }
+      });
     } catch (error) {
       console.error("Error fetching timers:", error);
     }
   };
-  const fetchPeriods = async () => {
-    try {
-      const res = await fetch("/api/timer");
-      const data = await res.json();
-      setNewPeriod(data.timers.map((timer, index) => timer.period));
-      console.log("new periods", newPeriod);
-    } catch (error) {
-      console.error("Error fetching timers:", error);
-    }
-  };
 
-  // useEffect(() => {
-  //   const fetchTimerData = async () => {
-  //     // Direct API call like RoomCard
-  //     const res = await fetch("/api/timer");
-  //     const data = await res.json();
-
-  //     // Update state
-  //     setTimeLeft(
-  //       data.timers.map((time, index) => {
-  //         // Return the timer value for all timers, with special handling for active timer
-  //         if (index === activeButton) {
-  //           const remaining = time.remaining;
-
-  //           // Handle last 10 seconds state
-  //           if (remaining <= 11 && remaining > 1) {
-  //             onLastTenSeconds(true);
-  //           }
-
-  //           // Check for bid result at 2 seconds
-  //           if (remaining === 2) {
-  //             console.log(bidAmount);
-  //             checkBidResult();
-  //           }
-
-  //           // Reset last 10 seconds state at 1 second
-  //           if (remaining === 1) {
-  //             onLastTenSeconds(false);
-  //           }
-
-  //           return remaining;
-  //         }
-  //         // Always return the remaining time for non-active timers
-  //         return time.remaining;
-  //       })
-  //     );
-
-  //     setNewPeriod(data.timers.map((timer, index) => timer.period));
-  //   };
-
-  //   fetchTimerData();
-  //   const interval = setInterval(fetchTimerData, 1000);
-  //   return () => clearInterval(interval);
-  // }, []);
-
+  // Set up initial fetch and interval
   useEffect(() => {
-    // const callRandomNumberApi = async () => {
-    //   try {
-    //     const response = await axios.get("/api/random-number");
-    //   } catch (error) {
-    //     console.error("Error calling the random number API:", error);
-    //   }
-    // };
-
-    // callRandomNumberApi(); // Call the API when the app starts
+    // Initial fetch
     fetchTimers();
+
+    // Set up interval for regular fetching
+    const interval = setInterval(fetchTimers, 1000);
+
+    // Cleanup on component unmount
+    return () => clearInterval(interval);
   }, []);
+
   // Format period helper function
   const formatPeriod = useCallback((index) => {
     const today = new Date();
@@ -265,7 +249,7 @@ const Timer = ({
   useEffect(() => {
     timeLeft.forEach((time, index) => {
       if (time <= 1) {
-        fetchPeriods();
+        fetchTimers();
       }
     });
   }, [timeLeft]);
@@ -338,97 +322,14 @@ const Timer = ({
     }
   };
 
-  useEffect(() => {
-    // Timer countdown logic
-    const interval = setInterval(() => {
-      setTimeLeft((prevTimes) =>
-        prevTimes.map((time, index) => {
-          // Only process the active timer
-          if (index === activeButton) {
-            // When timer hits 5 seconds remaining, call the winner API
-            // if (time === 5) {
-            //   // Get the current period for this timer
-            //   const currentPeriod = newPeriod && newPeriod[index];
-
-            //   if (currentPeriod) {
-            //     console.log(
-            //       `Timer at 5 seconds, calling winner API for period ${currentPeriod}`
-            //     );
-
-            //     // Call the winner API
-            //     fetch(`/api/winner?period=${currentPeriod}`)
-            //       .then((response) => response.json())
-            //       .then((data) => {
-            //         console.log(
-            //           `Winner API response for period ${currentPeriod}:`,
-            //           data
-            //         );
-            //       })
-            //       .catch((error) => {
-            //         console.error(
-            //           `Error calling winner API for period ${currentPeriod}:`,
-            //           error
-            //         );
-            //       });
-            //   }
-            // }
-            if (time == 2) {
-              console.log(bidAmount);
-              checkBidResult();
-            }
-            // When timer hits 1 second remaining
-            if (time === 1) {
-              onLastTenSeconds(false);
-
-              // Process user bet result if applicable
-              // if (result && bidAmount && selected) {
-              //   const myHistory = {
-              //     timestamp: Date.now(),
-              //     selected,
-              //     drawNumber: result.number,
-              //     result:
-              //       result.number === selected ||
-              //       result?.colors[0] === selected ||
-              //       result?.colors[1] === selected ||
-              //       result.bigSmall === selected
-              //         ? "Win"
-              //         : "Loss",
-              //   };
-              //   setMyHistory(myHistory);
-              //   addMyHistory(myHistory);
-              //   setSelected();
-              // }
-
-              // Reset timer to full duration
-              return times[index].seconds;
-            }
-
-            // Handle last 10 seconds state
-            if (time <= 11 && time > 1) {
-              onLastTenSeconds(true);
-            }
-
-            // Normal countdown
-            return time > 0 ? time - 1 : times[index].seconds;
-          }
-
-          // For non-active timers, just continue countdown
-          return time > 0 ? time - 1 : times[index].seconds;
-        })
-      );
-    }, 1000);
-
-    // Cleanup interval on component unmount
-    return () => clearInterval(interval);
-  }, [times]);
-
+  // Handle active button change
   useEffect(() => {
     console.log(timeLeft[activeButton] > 11);
     localStorage.setItem("btnIndx", activeButton);
 
-    if (timeLeft[activeButton] > 11) onLastTenSeconds(false);
+    if (timeLeft[activeButton] >= 11) onLastTenSeconds(false);
     else onLastTenSeconds(true);
-  }, [activeButton]);
+  }, [activeButton, timeLeft]);
 
   // Memoized timer display
   const activeTimerDisplay = useMemo(() => {
