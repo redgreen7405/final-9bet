@@ -10,10 +10,10 @@ const timers = [
   { label: "10min", duration: 600 },
 ];
 
-// export const runtime = "edge";
+export const runtime = "edge";
 
 // Centralized start time stored globally for simplicity
-let universalStartTime = new Date();
+let universalStartTime = 1709251200000;
 // Track which periods have already been processed to avoid duplicate calls
 const processedPeriods = new Set();
 
