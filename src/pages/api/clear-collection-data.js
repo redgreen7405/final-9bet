@@ -1,6 +1,5 @@
 import { ref, set, remove } from "firebase/database";
 
-export const runtime = "edge";
 // Function to clear all records from the randomData database
 export const clearRandomDataDatabase = async () => {
   try {

@@ -1,5 +1,9 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {};
+const nextConfig = {
+  experimental: {
+    runtime: "nodejs", // Ensures Next.js API runs in a Node.js environment
+  },
+};
 
 export default nextConfig;
 

@@ -1,3 +1,4 @@
 name = "9bets-worker"
 compatibility_date = "2025-03-25"
 main = "src/index.js"
+compatibility_flags = [ "nodejs_compat" ]

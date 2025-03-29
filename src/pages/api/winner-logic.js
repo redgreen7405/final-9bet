@@ -56,7 +56,6 @@ export const getRemainingTimes = () => {
   return timers.map((_, index) => getRemainingTime(index));
 };
 
-export const runtime = "edge";
 // Function to calculate winners and distribute rewards based on smallest bet amount
 export const handleWinRequest = async (timerIndex = 0) => {
   try {

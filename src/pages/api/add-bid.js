@@ -10,7 +10,7 @@ import {
   where,
   updateDoc,
 } from "firebase/firestore";
-export const runtime = "edge";
+
 // Reusable API function to handle bids
 export const handleBidRequest = async (
   slotId,
