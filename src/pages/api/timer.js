@@ -10,7 +10,7 @@ const timers = [
   { label: "10min", duration: 600 },
 ];
 
-export const runtime = "edge";
+// export const runtime = "edge";
 
 // Centralized start time stored globally for simplicity
 let universalStartTime = new Date();
