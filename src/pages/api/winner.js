@@ -1,7 +1,7 @@
 import { handleWinRequest } from "./winner-logic";
 export default async function handler(req, res) {
   try {
-    const url = new URL(req.url); // Use your actual domain in production
+    const url = new URL(req.url, "https://final-9bet-rkt2.vercel.app/"); // Use your actual domain in production
     console.log(url);
     const period = url.searchParams.get("period");
 
