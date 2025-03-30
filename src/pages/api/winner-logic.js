@@ -22,7 +22,7 @@ const timers = [
 ];
 
 // Start time for the application
-let universalStartTime = new Date();
+let universalStartTime = 1743313692000;
 
 // Track which periods have already been processed to avoid duplicate calls
 const processedPeriods = new Set();
