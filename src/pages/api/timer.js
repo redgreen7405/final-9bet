@@ -13,7 +13,7 @@ const timers = [
 export const runtime = "edge";
 
 // Centralized start time stored globally for simplicity
-let universalStartTime = 1743265393181;
+let universalStartTime = 1743292080;
 // Track which periods have already been processed to avoid duplicate calls
 const processedPeriods = new Set();
 
