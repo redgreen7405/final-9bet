@@ -17,7 +17,7 @@ if (
   import("./src/lib/localSchduler.js")
     .then(({ setupLocalScheduler }) => {
       setTimeout(() => {
-        setupLocalScheduler();
+        // setupLocalScheduler();
         console.log("✅ Cron job initialized at server startup");
       }, 5000);
       fetchTimerData();

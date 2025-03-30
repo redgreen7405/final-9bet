@@ -154,7 +154,7 @@ const Timer = ({
           // Handle bid result check at 2 seconds
           if (remaining === 2) {
             console.log("Checking bid result at 2 seconds remaining");
-            checkBidResult();
+            checkBidResult(newPeriod);
           }
 
           // Handle last 10 seconds state
@@ -277,9 +277,9 @@ const Timer = ({
       console.error("Error Adding My History:", error);
     }
   }
-  const checkBidResult = async () => {
+  const checkBidResult = async (np) => {
     try {
-      const slotId = newPeriod[activeButton || 0];
+      const slotId = np;
       if (!slotId) {
         console.log("No bid amount or slot ID provided");
         return null;
