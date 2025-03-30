@@ -9,23 +9,17 @@ export default nextConfig;
 
 const isServer = typeof window === "undefined";
 
-if (
-  isServer &&
-  (process.env.NODE_ENV !== "production" ||
-    process.env.NEXT_PHASE === "phase-production-server")
-) {
-  import("./src/lib/localSchduler.js")
-    .then(({ setupLocalScheduler }) => {
-      setTimeout(() => {
-        // setupLocalScheduler();
-        console.log("✅ Cron job initialized at server startup");
-      }, 5000);
-      fetchTimerData();
-    })
-    .catch((error) => {
-      console.error("❌ Failed to initialize cron job:", error);
-    });
-}
+import("./src/lib/localSchduler.js")
+  .then(({ setupLocalScheduler }) => {
+    setTimeout(() => {
+      setupLocalScheduler();
+      console.log("✅ Cron job initialized at server startup");
+    }, 5000);
+    fetchTimerData();
+  })
+  .catch((error) => {
+    console.error("❌ Failed to initialize cron job:", error);
+  });
 
 const fetchTimerData = async () => {
   try {
