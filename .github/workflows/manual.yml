@@ -1,0 +1,34 @@
+name: 🔄 Multiple Cron Jobs for Vercel API
+
+on:
+  schedule:
+    - cron: "*/1 * * * *" # Runs every 5 minutes
+    - cron: "*/3 * * * *" # Runs every 10 minutes
+    - cron: "*/5 * * * *" # Runs every hour
+    - cron: "*/10 * * * *" # Runs daily at midnight
+  workflow_dispatch: # Allows manual execution
+
+jobs:
+  cron_job_1:
+    runs-on: ubuntu-latest
+    steps:
+      - name: ⏳ Call API (5 min interval)
+        run: curl -X GET "https://www.9bets.in/api/winner?period=0"
+
+  cron_job_2:
+    runs-on: ubuntu-latest
+    steps:
+      - name: ⏳ Call API (10 min interval)
+        run: curl -X GET "https://www.9bets.in/api/winner?period=1"
+
+  cron_job_3:
+    runs-on: ubuntu-latest
+    steps:
+      - name: ⏳ Call API (Hourly)
+        run: curl -X GET "https://www.9bets.in/api/winner?period=2"
+
+  cron_job_4:
+    runs-on: ubuntu-latest
+    steps:
+      - name: ⏳ Call API (Daily)
+        run: curl -X GET "https://www.9bets.in/api/winner?period=3"
