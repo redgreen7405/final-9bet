@@ -349,7 +349,7 @@ const Drawer = ({
                     : "bg-gray-400 text-gray-200 cursor-not-allowed"
                 }`}
               onClick={handleGamePlay}
-              disabled={!canSubmit && loading}
+              disabled={!canSubmit || loading}
             >
               Total ₹ {totalAmount.toFixed(2)}
             </button>

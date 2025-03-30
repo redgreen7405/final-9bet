@@ -154,7 +154,7 @@ const Timer = ({
           // Handle bid result check at 2 seconds
           if (remaining === 2) {
             console.log("Checking bid result at 2 seconds remaining");
-            checkBidResult(newPeriod);
+            checkBidResult(timer.period);
           }
 
           // Handle last 10 seconds state
