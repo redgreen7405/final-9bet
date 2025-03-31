@@ -218,12 +218,28 @@ const Timer = ({
         dataArray.sort((a, b) => b.timestamp - a.timestamp);
 
         // Get last 5 wins for display
-        const last5 = dataArray.slice(0, 5).map((entry) => ({
-          colors: entry.colors,
-          number: entry.number,
-          period: entry.period || formatPeriod(dataArray.length),
-        }));
-
+        // Filter and map based on active button
+        const last5 = dataArray
+          .filter((entry) => {
+            switch (activeButton) {
+              case 0:
+                return entry.period?.includes("1M");
+              case 1:
+                return entry.period?.includes("3M");
+              case 2:
+                return entry.period?.includes("5M");
+              case 3:
+                return entry.period?.includes("10M");
+              default:
+                return true;
+            }
+          })
+          .slice(0, 5)
+          .map((entry) => ({
+            colors: entry.colors,
+            number: entry.number,
+            period: entry.period || formatPeriod(dataArray.length),
+          }));
         setLastWins(last5);
 
         if (dataArray.length > 0) {
@@ -239,7 +255,7 @@ const Timer = ({
     return () => {
       off(randomDataRef);
     };
-  }, [calculateNextPeriod, formatPeriod]);
+  }, [calculateNextPeriod, formatPeriod, activeButton]);
 
   const handlePeriod = () => {
     return `${new Date().getFullYear()}${
@@ -279,6 +295,9 @@ const Timer = ({
   }
   const checkBidResult = async (np) => {
     try {
+      const userId = localStorage.getItem("user")?.slice(1, -1);
+      if (!userId) throw new Error("User ID not found in localStorage.");
+
       const slotId = np;
       if (!slotId) {
         console.log("No bid amount or slot ID provided");
@@ -286,14 +305,17 @@ const Timer = ({
       }
 
       const bidsRef = collection(firestore, "bids");
-      const q = query(bidsRef, where("slotId", "==", slotId));
+      const q = query(
+        bidsRef,
+        where("slotId", "==", slotId),
+        where("userId", "==", userId)
+      );
 
       const querySnapshot = await getDocs(q);
       if (querySnapshot.empty) {
         console.log("No matching bid found for slot ID:", slotId);
         return null;
       }
-
       const bidResults = querySnapshot.docs.map((doc) => {
         const data = doc.data();
         return {
@@ -310,6 +332,7 @@ const Timer = ({
         selected,
         drawNumber: bidResults[0].resultNumber,
         result: foundWin ? "Win" : "Loss",
+        winningAmount: foundWin ? foundWin.winningAmount : 0,
       };
       console.log(myHistory);
       setMyHistory(myHistory);
@@ -373,8 +396,7 @@ const Timer = ({
                 How to Play
               </button>
               <p className="text-white font-semibold text-sm sm:text-base">
-                9bets
-                {/* {times[activeButton].label} */}
+                9bets {times[activeButton].label}
               </p>
 
               {/* Win History Grid */}

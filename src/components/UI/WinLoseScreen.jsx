@@ -92,18 +92,32 @@ const WinLoseScreen = ({ myHistory, setResultDisplay }) => {
           </p>
 
           {isWin && (
-            <div className="mb-4 p-4 bg-white/10 backdrop-blur-sm rounded-xl border border-white/20">
-              <div className="text-center">
-                <p className="text-sm text-gray-300">Winning Number</p>
-                <motion.p
-                  animate={{ scale: [1, 1.1, 1] }}
-                  transition={{ duration: 0.5, repeat: Infinity }}
-                  className="font-bold text-2xl text-yellow-400"
-                >
-                  {myHistory?.drawNumber}
-                </motion.p>
+            <>
+              <div className="mb-4 p-4 bg-white/10 backdrop-blur-sm rounded-xl border border-white/20">
+                <div className="text-center">
+                  <p className="text-sm text-gray-300">Winning Number</p>
+                  <motion.p
+                    animate={{ scale: [1, 1.1, 1] }}
+                    transition={{ duration: 0.5, repeat: Infinity }}
+                    className="font-bold text-2xl text-yellow-400"
+                  >
+                    {myHistory?.drawNumber}
+                  </motion.p>
+                </div>
               </div>
-            </div>
+              <div className="mb-4 p-4 bg-white/10 backdrop-blur-sm rounded-xl border border-white/20">
+                <div className="text-center">
+                  <p className="text-sm text-gray-300">Winning Amount</p>
+                  <motion.p
+                    animate={{ scale: [1, 1.1, 1] }}
+                    transition={{ duration: 0.5, repeat: Infinity }}
+                    className="font-bold text-2xl text-yellow-400"
+                  >
+                    {myHistory?.winningAmount?.toFixed(2)}
+                  </motion.p>
+                </div>
+              </div>
+            </>
           )}
 
           <div className="mb-8 p-4 bg-white/10 backdrop-blur-sm rounded-xl border border-white/20">

@@ -22,7 +22,7 @@ const timers = [
 ];
 
 // Start time for the application
-let universalStartTime = 1743313658000;
+let universalStartTime = 1743440970000;
 
 // Track which periods have already been processed to avoid duplicate calls
 const processedPeriods = new Set();
@@ -84,8 +84,9 @@ export const handleWinRequest = async (timerIndex = 0) => {
       finalNumber = adminResult.number;
       colors = [adminResult.color];
       bigSmall = adminResult.bigSmall;
-    } else {
-      // If no admin result, use random number
+    }
+
+    if (bidsSnapshot.empty) {
       finalNumber = Math.floor(Math.random() * 10);
       colors = [];
       if (finalNumber % 2 === 0) {
@@ -99,9 +100,6 @@ export const handleWinRequest = async (timerIndex = 0) => {
         colors.push("violet");
       }
       bigSmall = finalNumber > 4 ? "big" : "small";
-    }
-
-    if (bidsSnapshot.empty) {
       // Calculate totals
       const totalBets = 0;
       let totalAmount = 0;
@@ -242,15 +240,22 @@ export const handleWinRequest = async (timerIndex = 0) => {
     });
     console.log("final bets", finalBets);
     const minimalValue = Math.min(...Object.values(finalBets));
+    console.log(minimalValue, "min");
+    function findKeyByValue(obj, value) {
+      for (const [key, val] of Object.entries(obj)) {
+        if (val === value) {
+          return key; // Return the key if the value matches
+        }
+      }
+      return null; // Return null if no key is found
+    }
 
-    finalNumber = finalNumber
-      ? finalNumber
-      : Math.min(
-          ...Object.keys(finalBets).filter(
-            (key) => finalBets[key] === minimalValue
-          )
-        );
+    // Get the key for the value x
+    const filterMin = findKeyByValue(finalBets, minimalValue);
+    console.log("fmin", filterMin);
+    finalNumber = finalNumber ? finalNumber : filterMin;
 
+    console.log(finalNumber, "final");
     let winDetails = [];
 
     // Loop through the bids and update the winning ones
@@ -296,7 +301,11 @@ export const handleWinRequest = async (timerIndex = 0) => {
         winDetails.push(bet.userId);
       }
       const bidRef = doc(firestore, "bids", bet.docId);
-      batch.update(bidRef, { resultNumber: finalNumber, isWin: isWin });
+      batch.update(bidRef, {
+        resultNumber: finalNumber,
+        isWin: isWin,
+        winningAmount: isWin ? bet.totalBetAmount : 0,
+      });
     });
 
     // Commit the batch to Firestore

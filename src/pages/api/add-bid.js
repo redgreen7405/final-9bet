@@ -63,6 +63,7 @@ export const handleBidRequest = async (
       userId,
       betValue,
       totalBetAmount: quantity * multiplier * availableAmount,
+      winningAmount: 0,
       isWin: false,
       createdAt: serverTimestamp(),
     };
