@@ -32,7 +32,7 @@ const getRemainingTime = (index) => {
   const now = Date.now();
   const elapsed = Math.floor((now - universalStartTime) / 1000); // Elapsed seconds
   const remaining = timers[index].duration - (elapsed % timers[index].duration); // Loop logic
-  return remaining > 0 ? remaining : 0;
+  return remaining > 0 ? remaining : timers[index].duration;
 };
 
 // Get the current period number for a specific timer

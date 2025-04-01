@@ -14,7 +14,7 @@ import {
   ArrowUpIcon,
 } from "@heroicons/react/24/solid";
 
-const Wallet = ({ money, setMoney }) => {
+const Wallet = ({ money, setMoney, myHistory }) => {
   const db = getFirestore(app);
 
   useEffect(() => {
@@ -34,7 +34,7 @@ const Wallet = ({ money, setMoney }) => {
       }
     };
     fetchWalletBalance();
-  }, [db]);
+  }, [db, myHistory]);
 
   const formatMoneyInINR = (amount = 0) => {
     if (isNaN(amount) || amount === null || amount === undefined) {

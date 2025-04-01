@@ -270,7 +270,7 @@ export default function Dashboard() {
   // Copy referral URL
   const handleCopyReferralUrl = () => {
     navigator.clipboard
-      .writeText(referralUrl)
+      .writeText(`https://www.9bets.in/sign-up?id=${referralUrl}`)
       .then(() => toast.success("Referral URL copied!"))
       .catch(() => toast.error("Failed to copy URL."));
   };
@@ -688,7 +688,7 @@ export default function Dashboard() {
               {referralUrl ? (
                 <input
                   type="text"
-                  value={referralUrl}
+                  value={`https://www.9bets.in/sign-up/${referralUrl}`}
                   readOnly
                   className="w-full p-2 border rounded-l-lg bg-gray-100 truncate"
                 />

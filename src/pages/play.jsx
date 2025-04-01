@@ -84,7 +84,7 @@ const Play = () => {
       <div className="p-1 mt-16 md:mt-24 space-y-8">
         <div className="wallet-balance-container">
           <div className="flex justify-center items-center my-6 relative px-4">
-            <Wallet setMoney={setMoney} money={money} />
+            <Wallet setMoney={setMoney} money={money} myHistory={myHistory} />
           </div>
         </div>
         <div className="timer-container">

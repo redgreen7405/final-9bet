@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { firestore, auth } from "../../utils/firebase";
 import {
@@ -26,6 +26,14 @@ const SignUpComponent = () => {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
+
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const referralId = urlParams.get("id");
+    if (referralId) {
+      setReferralCodeInput(referralId);
+    }
+  }, []);
 
   const validateInputs = () => {
     const errors = {};
