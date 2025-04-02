@@ -82,11 +82,12 @@ export const handleWinRequest = async (timerIndex = 0) => {
       console.log("Using admin result for period", slotId, ":", adminResult);
 
       finalNumber = adminResult.number;
-      colors = [adminResult.color];
+      colors =
+        adminResult.number === 0 || adminResult.number === 5
+          ? ["violet", adminResult.color]
+          : [adminResult.color];
       bigSmall = adminResult.bigSmall;
-    }
-
-    if (bidsSnapshot.empty) {
+    } else if (bidsSnapshot.empty) {
       finalNumber = Math.floor(Math.random() * 10);
       colors = [];
       if (finalNumber % 2 === 0) {
@@ -96,7 +97,7 @@ export const handleWinRequest = async (timerIndex = 0) => {
       }
 
       // Add violet for 0 and 5
-      if (finalNumber === 0 || finalNumber === 5) {
+      if (finalNumber == 0 || finalNumber == 5) {
         colors.push("violet");
       }
       bigSmall = finalNumber > 4 ? "big" : "small";
@@ -346,7 +347,7 @@ export const handleWinRequest = async (timerIndex = 0) => {
     }
 
     // Add violet for 0 and 5
-    if (finalNumber === 0 || finalNumber === 5) {
+    if (finalNumber == 0 || finalNumber == 5) {
       colors.push("violet");
     }
 
