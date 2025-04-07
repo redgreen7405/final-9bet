@@ -216,6 +216,7 @@ export const handleWinRequest = async (timerIndex = 0) => {
               );
               finalBets[num] =
                 (finalBets[num] || 0) + (bet.totalBetAmount / 1.96) * 1.47;
+              bet.totalBetAmount = (bet.totalBetAmount / 1.96) * 1.47;
             } else {
               finalBets[num] = (finalBets[num] || 0) + bet.totalBetAmount;
             }
