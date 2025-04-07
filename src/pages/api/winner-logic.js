@@ -254,7 +254,7 @@ export const handleWinRequest = async (timerIndex = 0) => {
     // Get the key for the value x
     const filterMin = findKeyByValue(finalBets, minimalValue);
     console.log("fmin", filterMin);
-    finalNumber = finalNumber ? finalNumber : filterMin;
+    finalNumber = !adminBidRefSnapshot.empty ? finalNumber : filterMin;
 
     console.log(finalNumber, "final");
     let winDetails = [];
