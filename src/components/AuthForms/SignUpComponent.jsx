@@ -118,6 +118,24 @@ const SignUpComponent = () => {
             referralApplied: (referrerDoc.data().referralApplied || 0) + 1,
           });
 
+          const usersDepositRef = collection(firestore, "userDeposits");
+          const userDepositSnapshot = await getDocs(
+            query(usersDepositRef, where("id", "==", identifier))
+          );
+
+          if (!userDepositSnapshot.empty) {
+            const userDepositDoc = userDepositSnapshot.docs[0];
+            const newMoney = userDepositDoc.data().money;
+            const newMoney2 = newMoney + 100;
+            await updateDoc(userDepositDoc.ref, { money: newMoney2 });
+          } else {
+            await addDoc(usersDepositRef, {
+              id: data.userId,
+              money: 100,
+              timestamp: serverTimestamp(),
+            });
+          }
+
           // Update initial money and referralApplied for new user
           initialMoney = 100;
           toast.success("Referral code applied!");

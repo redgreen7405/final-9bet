@@ -69,6 +69,24 @@ export const handleBidRequest = async (
     };
     await addDoc(bidRef, bidData);
 
+    const usersDepositRef = collection(firestore, "userDeposits");
+    const userDepositSnapshot = await getDocs(
+      query(usersDepositRef, where("id", "==", userId))
+    );
+
+    if (!userDepositSnapshot.empty) {
+      const userDepositDoc = userDepositSnapshot.docs[0];
+      const newMoney = userDepositDoc.data().money;
+      const newMoney2 = newMoney - availableAmount;
+      await updateDoc(userDepositDoc.ref, { money: newMoney2 });
+    } else {
+      await addDoc(usersDepositRef, {
+        id: data.userId,
+        money: availableAmount,
+        timestamp: serverTimestamp(),
+      });
+    }
+
     toast.success("Bid added successfully");
     return {
       status: "success",

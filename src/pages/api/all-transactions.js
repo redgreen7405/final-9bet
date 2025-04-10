@@ -91,6 +91,12 @@ export const updateTransactionStatus = async (transactionId, status, data) => {
     const userSnapshot = await getDocs(
       query(usersRef, where("id", "==", data.userId))
     );
+
+    const usersDepositRef = collection(firestore, "userDeposits");
+    const userDepositSnapshot = await getDocs(
+      query(usersDepositRef, where("id", "==", data.userId))
+    );
+
     if (userSnapshot.empty) throw new Error("User document not found.");
     const userDoc = userSnapshot.docs[0];
 
@@ -121,6 +127,7 @@ export const updateTransactionStatus = async (transactionId, status, data) => {
 
     const currentMoney = userDoc.data().money || 0;
     const numValue = parseFloat(data.amount);
+
     if (data.type === "deposit") {
       const newMoney = currentMoney + numValue;
 
@@ -128,6 +135,19 @@ export const updateTransactionStatus = async (transactionId, status, data) => {
 
       // Update Firestore document to reflect the new balance
       await updateDoc(userDoc.ref, { money: newMoney });
+
+      if (!userDepositSnapshot.empty) {
+        const userDepositDoc = userDepositSnapshot.docs[0];
+        const newMoney = userDepositDoc.data().money;
+        const newMoney2 = newMoney + numValue;
+        await updateDoc(userDepositDoc.ref, { money: newMoney2 });
+      } else {
+        await addDoc(usersDepositRef, {
+          id: data.userId,
+          money: numValue,
+          timestamp: serverTimestamp(),
+        });
+      }
     }
     // Create a new transaction document in the 'transactions' subcollection
     const transactionRef = collection(userDoc.ref, "transactions");

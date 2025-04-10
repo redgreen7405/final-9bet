@@ -189,22 +189,30 @@ export default function Dashboard() {
       toast.error("Minimum withdrawal amount is Rs. 100");
       return;
     }
+    const numRegex = /^\d{10}$/;
     if (withdrawalMethod === "mobile") {
-      const numRegex = /^\d{10}$/;
       if (!numRegex.test(number)) {
         toast.error("Mobile number must be 10 digits");
         return;
       }
+      if (type === "deposit" && transactionData.upiId.length !== 12) {
+        toast.error("UPI ID must be 12 characters long ");
+        return;
+      }
     } else {
+      if (type === "deposit" && !numRegex.test(number)) {
+        toast.error("Mobile number must be 10 digits");
+        return;
+      }
       if (type === "deposit" && transactionData.upiId.length !== 12) {
         toast.error("UPI ID must be 12 characters long ");
         return;
       }
 
-      const ifscRegex = /^[A-Za-z]{4}[0-9]{7}$/;
+      const ifscRegex = /^.{6,15}$/;
       if (type === "withdrawal" && !ifscRegex.test(transactionData.ifsc)) {
         toast.error(
-          "IFSC code must be 11 characters long and contain only letters and numbers"
+          "IFSC code must be 6 to 15 characters long and contain only letters and numbers"
         );
         return;
       }
@@ -219,6 +227,20 @@ export default function Dashboard() {
       const userId = localStorage.getItem("user")?.slice(1, -1);
       if (!userId) throw new Error("User ID not found.");
 
+      const usersDepositRef = collection(firestore, "userDeposits");
+      const userDepositSnapshot = await getDocs(
+        query(usersDepositRef, where("id", "==", userId))
+      );
+      if (userDepositSnapshot.empty) {
+        toast.error("Please try again later");
+        return;
+      }
+      const userDepositDoc = userDepositSnapshot.docs[0];
+      const newMoney = userDepositDoc.data().money;
+      if (type === "withdrawal" && balance - newMoney < Number(value)) {
+        toast.error("Only added bid amount and win amount can be withdrawn.");
+        return;
+      }
       // const userDoc = userSnapshot.docs[0];
       // const currentMoney = userDoc.data().money || 0;
       // const numValue = parseFloat(value);
