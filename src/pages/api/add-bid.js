@@ -81,7 +81,7 @@ export const handleBidRequest = async (
       await updateDoc(userDepositDoc.ref, { money: newMoney2 });
     } else {
       await addDoc(usersDepositRef, {
-        id: data.userId,
+        id: userId,
         money: availableAmount,
         timestamp: serverTimestamp(),
       });

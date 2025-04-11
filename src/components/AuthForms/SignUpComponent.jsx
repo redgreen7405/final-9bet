@@ -130,7 +130,7 @@ const SignUpComponent = () => {
             await updateDoc(userDepositDoc.ref, { money: newMoney2 });
           } else {
             await addDoc(usersDepositRef, {
-              id: data.userId,
+              id: identifier,
               money: 100,
               timestamp: serverTimestamp(),
             });
