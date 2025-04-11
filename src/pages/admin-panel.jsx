@@ -15,6 +15,7 @@ import Loader from "../components/UI/Loader";
 import RequestHistoryTable from "./request-table";
 import { addDoc, collection, getDocs } from "firebase/firestore";
 import { serverTimestamp } from "firebase/database";
+import WithdrawalSwitch from "../components/admin/WithdrawalSwitch";
 
 export const AdminPanel = () => {
   const [user] = useAuthState(auth);
@@ -155,7 +156,21 @@ export const AdminPanel = () => {
                 )}
               </div>
             </div>
-            {/* You can add more summary stats here in the future */}
+
+            {/* Withdrawal Restriction Switch */}
+            <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100">
+              <div className="flex items-center justify-between">
+                <div>
+                  <div className="text-sm text-gray-500">
+                    Withdrawal Restriction
+                  </div>
+                  <div className="text-xs text-gray-400">
+                    Limit withdrawals to won amount
+                  </div>
+                </div>
+                <WithdrawalSwitch />
+              </div>
+            </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">

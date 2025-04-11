@@ -237,9 +237,19 @@ export default function Dashboard() {
       }
       const userDepositDoc = userDepositSnapshot.docs[0];
       const newMoney = userDepositDoc.data().money;
-      if (type === "withdrawal" && balance - newMoney < Number(value)) {
-        toast.error("Only added bid amount and win amount can be withdrawn.");
-        return;
+      if (type === "withdrawal") {
+        // Check withdrawal restriction setting
+        const settingDoc = await getDoc(
+          doc(firestore, "settings", "withdrawal")
+        );
+        const isRestricted = settingDoc.exists()
+          ? settingDoc.data().isRestricted
+          : true;
+
+        if (isRestricted && balance - newMoney < Number(value)) {
+          toast.error("Only added bid amount and win amount can be withdrawn.");
+          return;
+        }
       }
       // const userDoc = userSnapshot.docs[0];
       // const currentMoney = userDoc.data().money || 0;
@@ -276,6 +286,7 @@ export default function Dashboard() {
         transactionData.bankNo
       );
       console.log(response, "rs ::");
+      fetchUserBalance();
       toast.success(type + " request successfull!");
     } catch (error) {
       toast.error(error.message || type + " request failed. Please try again.");
