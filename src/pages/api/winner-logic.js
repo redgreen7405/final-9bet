@@ -312,9 +312,30 @@ export const handleWinRequest = async (timerIndex = 0) => {
 
     // Commit the batch to Firestore
     await batch.commit();
+    console.log(allBets, "all bets");
+    console.log("winDetials ::", winDetails);
+    // allBets.forEach(async (doc) => {
+    //   // Update the bid document with win/loss status and payout
+    //   const isWinner = winDetails.includes(doc.userId);
+    //   console.log("doc", doc);
+    //   if (isWinner) {
+    //     const userRef = collection(firestore, "users");
+    //     const userSnapshot = await getDocs(
+    //       query(userRef, where("id", "==", doc.userId))
+    //     );
 
-    allBets.forEach(async (doc) => {
-      // Update the bid document with win/loss status and payout
+    //     if (!userSnapshot.empty) {
+    //       const userDoc = userSnapshot.docs[0];
+    //       const currentMoney = userDoc.data().money || 0;
+    //       const newMoney = currentMoney + doc.totalBetAmount;
+
+    //       // Update user's money in Firestore
+    //       await updateDoc(userDoc.ref, { money: newMoney });
+    //     }
+    //   }
+    // });
+
+    for (const doc of allBets) {
       const isWinner = winDetails.includes(doc.userId);
       if (isWinner) {
         const userRef = collection(firestore, "users");
@@ -327,11 +348,10 @@ export const handleWinRequest = async (timerIndex = 0) => {
           const currentMoney = userDoc.data().money || 0;
           const newMoney = currentMoney + doc.totalBetAmount;
 
-          // Update user's money in Firestore
           await updateDoc(userDoc.ref, { money: newMoney });
         }
       }
-    });
+    }
 
     console.log("winner", allBets);
     // Create a new game record in the games collection
