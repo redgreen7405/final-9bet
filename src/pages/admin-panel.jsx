@@ -65,10 +65,10 @@ export const AdminPanel = () => {
     }));
   };
 
-  const handleAddDraw = async (roomId) => {
+  const handleAddDraw = async (roomId, indx) => {
     console.log(roomId, selections);
 
-    const roomSelections = selections[0] || {};
+    const roomSelections = selections[indx] || {};
     const loadingToast = toast.loading("Processing...");
 
     if (
