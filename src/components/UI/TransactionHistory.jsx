@@ -59,7 +59,7 @@ const TransactionHistory = () => {
         setTransactions(transactionsList);
         console.log("trans", transactionsList);
       } else {
-        throw new Error("User not found.");
+        throw new Error("Please login to continue.");
       }
     } catch (error) {
       console.error("Error fetching transactions: ", error);

@@ -52,15 +52,15 @@ const Navbar = () => {
         </div>
       </Link>
       <div className="flex space-x-6">
-        <Link href="/" className={`hover:text-gray-300 ${isActive("/")}`}>
+        {/* <Link href="/" className={`hover:text-gray-300 ${isActive("/")}`}>
           Home
-        </Link>
-        <Link
+        </Link> */}
+        {/* <Link
           href="/activity"
           className={`hover:text-gray-300 ${isActive("/activity")}`}
         >
           Activity
-        </Link>
+        </Link> */}
         <Link
           href="/wallet"
           className={`hover:text-gray-300 ${isActive("/wallet")}`}

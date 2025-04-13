@@ -64,6 +64,8 @@ const cardData = [
 ];
 
 const HomePage = () => {
+  redirect("/play", "replace");
+
   const [user] = useAuthState(auth);
   const router = useRouter();
 

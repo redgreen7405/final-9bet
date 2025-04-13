@@ -32,6 +32,8 @@ import { Menu } from "@headlessui/react";
 import Loader from "../components/UI/Loader";
 import "../app/globals.css";
 import { handleTransactionRequest } from "./api/transaction-handle";
+import { useRouter } from "next/router";
+import { redirect } from "next/navigation";
 
 // Define filter options as a constant outside the component
 const FILTER_OPTIONS = [
@@ -61,6 +63,7 @@ export default function Dashboard() {
   const [referralUrl, setReferralUrl] = useState("");
   const [balance, setBalance] = useState();
   const [withdrawalMethod, setWithdrawalMethod] = useState("mobile"); // 'mobile' or 'bank'
+  const router = useRouter();
 
   // Fetch payments and set referral URL
   useEffect(() => {
@@ -109,7 +112,10 @@ export default function Dashboard() {
   };
   const fetchPayments = async () => {
     const userId = localStorage.getItem("user")?.slice(1, -1); // Get the userId from localStorage
-
+    if (!userId) {
+      toast.error("User not found.");
+      redirect("/login", "replace");
+    }
     try {
       const usersRef = collection(firestore, "users"); // Reference to the 'users' collection
       const userSnapshot = await getDocs(
@@ -158,7 +164,10 @@ export default function Dashboard() {
   const fetchUserBalance = async () => {
     try {
       const userId = localStorage.getItem("user")?.slice(1, -1);
-      if (!userId) throw new Error("User ID not found.");
+      if (!userId) {
+        toast.error("Please login to continue.");
+        redirect("/login", "replace");
+      }
 
       const usersRef = collection(firestore, "users");
       const userSnapshot = await getDocs(

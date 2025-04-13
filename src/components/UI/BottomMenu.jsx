@@ -38,24 +38,35 @@ const BottomMenu = () => {
     <nav className="fixed bottom-0 w-full bg-white border-t border-gray-200 z-10">
       <div className="flex justify-around items-center py-2 space-x-4">
         {/* Home Link */}
-        <Link href="/">
+        {/* <Link href="/">
           <div className="flex flex-col items-center">
             <HomeIcon className={`h-6 w-6 ${isActive("/")}`} />
             <span className={`text-xs mt-1 ${isActive("/")}`}>Home</span>
           </div>
-        </Link>
+        </Link> */}
 
         {/* Activity Link */}
-        <Link href="/activity">
+        {/* <Link href="/activity">
           <div className="flex flex-col items-center">
             <BellIcon className={`h-6 w-6 ${isActive("/activity")}`} />
             <span className={`text-xs mt-1 ${isActive("/activity")}`}>
               Activity
             </span>
           </div>
-        </Link>
+        </Link> */}
 
         {/* Play Button or Plus Icon */}
+
+        {/* Wallet Link */}
+        <Link href="/wallet">
+          <div className="flex flex-col items-center">
+            <WalletIcon className={`h-6 w-6 ${isActive("/wallet")}`} />
+            <span className={`text-xs mt-1 ${isActive("/wallet")}`}>
+              Wallet
+            </span>
+          </div>
+        </Link>
+
         {user ? (
           <Link href="/play" className="flex flex-col items-center">
             <PuzzlePieceIcon className={`h-6 w-6 ${isActive("/play")}`} />
@@ -72,16 +83,6 @@ const BottomMenu = () => {
             </button>
           </div>
         )}
-
-        {/* Wallet Link */}
-        <Link href="/wallet">
-          <div className="flex flex-col items-center">
-            <WalletIcon className={`h-6 w-6 ${isActive("/wallet")}`} />
-            <span className={`text-xs mt-1 ${isActive("/wallet")}`}>
-              Wallet
-            </span>
-          </div>
-        </Link>
 
         {/* Account Button */}
         <button

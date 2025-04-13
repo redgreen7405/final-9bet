@@ -15,6 +15,7 @@ import { handleBidRequest } from "../../pages/api/add-bid";
 import { handleWinRequest } from "../../pages/api/winner-logic";
 import { clearRandomDataDatabase } from "../../pages/api/clear-collection-data";
 import PreSaleRulesModal from "./PreSaleRulesModal";
+import { useRouter } from "next/router";
 
 const Drawer = ({
   isOpen,
@@ -38,6 +39,7 @@ const Drawer = ({
   const [loading, setLoading] = useState(false);
   const { selectedBalance, quantity, multiplier, isAgreed, isClosing } =
     gameState;
+  const router = useRouter();
   const totalAmount = selectedBalance * quantity * multiplier;
   const multipliers = [1, 5, 10, 20, 50, 100];
   const canSubmit = isAgreed && totalAmount > 0;
@@ -178,6 +180,14 @@ const Drawer = ({
       const slotId =
         newPeriod?.length > 0 ? newPeriod[activeButton || 0] : null;
       console.log(slotId, gameState, selected);
+
+      const userId = localStorage.getItem("user")?.slice(1, -1);
+      if (!userId) {
+        toast.error("Please login to continue.");
+        router.push("/login");
+        return;
+      }
+
       const result = await handleBidRequest(
         slotId,
         selected,
