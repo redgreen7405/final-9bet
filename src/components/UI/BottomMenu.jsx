@@ -58,14 +58,25 @@ const BottomMenu = () => {
         {/* Play Button or Plus Icon */}
 
         {/* Wallet Link */}
-        <Link href="/wallet">
-          <div className="flex flex-col items-center">
-            <WalletIcon className={`h-6 w-6 ${isActive("/wallet")}`} />
-            <span className={`text-xs mt-1 ${isActive("/wallet")}`}>
-              Wallet
-            </span>
-          </div>
-        </Link>
+        {user ? (
+          <Link href="/wallet">
+            <div className="flex flex-col items-center">
+              <WalletIcon className={`h-6 w-6 ${isActive("/wallet")}`} />
+              <span className={`text-xs mt-1 ${isActive("/wallet")}`}>
+                Wallet
+              </span>
+            </div>
+          </Link>
+        ) : (
+          <Link href="/login">
+            <div className="flex flex-col items-center">
+              <HomeIcon className={`h-6 w-6 ${isActive("/wallet")}`} />
+              <span className={`text-xs mt-1 ${isActive("/wallet")}`}>
+                Login
+              </span>
+            </div>
+          </Link>
+        )}
 
         {user ? (
           <Link href="/play" className="flex flex-col items-center">

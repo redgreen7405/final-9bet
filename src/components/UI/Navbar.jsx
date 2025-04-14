@@ -61,12 +61,14 @@ const Navbar = () => {
         >
           Activity
         </Link> */}
-        <Link
-          href="/wallet"
-          className={`hover:text-gray-300 ${isActive("/wallet")}`}
-        >
-          Wallet
-        </Link>
+        {user && (
+          <Link
+            href="/wallet"
+            className={`hover:text-gray-300 ${isActive("/wallet")}`}
+          >
+            Wallet
+          </Link>
+        )}
         {user && (
           <Link
             href="/play"
@@ -79,7 +81,7 @@ const Navbar = () => {
           onClick={handleAccountClick}
           className={`hover:text-gray-300 ${isActive("/sign-up")}`}
         >
-          Account
+          {user ? "Account" : "Sign Up / Log In"}
         </button>
         {user?.providerData[0].email === "redgreen7405@gmail.com" && (
           <button

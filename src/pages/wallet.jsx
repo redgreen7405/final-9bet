@@ -114,7 +114,7 @@ export default function Dashboard() {
     const userId = localStorage.getItem("user")?.slice(1, -1); // Get the userId from localStorage
     if (!userId) {
       toast.error("User not found.");
-      redirect("/login", "replace");
+      router.replace("/login");
     }
     try {
       const usersRef = collection(firestore, "users"); // Reference to the 'users' collection
